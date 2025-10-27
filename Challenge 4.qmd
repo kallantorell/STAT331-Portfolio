@@ -1,0 +1,96 @@
+---
+title: "Challenge 4"
+author: "Kallan Paul Torell"
+format: html
+editor: source
+embed-resources: true
+execute:
+  code-tools: true
+  code-fold: true
+  echo: true
+  eval: true
+---
+
+## Childcare Prices
+
+For this challenge you are tasked with investigating the full-time median price for childcare in a center-based setting versus the full-time median price for childcare in a family (in-home) setting in California. This investigation will be written as a short report, and should be no more than 250 words.
+
+You will need to posit a research question which will guide your analysis. You can include any additional variables in the dataset for your analysis. You are expected to present one table of summary statistics and one plot that helps to address your research question.
+
+This write-up must include:
+
+-   A description of the data you are using
+
+-   Your research question
+
+-   One **well-designed** table of summary statistics
+
+    -   Note, this **should not** be a statistical test!
+
+    -   This should be a summary table of the data itself (similar to Question 5).
+
+-   One **well-designed** plot
+
+-   Descriptions of the table and plot that both:
+
+    -   Explain what the table/plot is literally showing (e.g. the median cost by year)
+
+    -   Analyze what you learn from the table/plot about your research question
+
+The table and plot should not show redundant information, they should be used to gain more insight on your question.
+
+```{r}
+library(readxl)
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(ggplot2)
+```
+
+```{r}
+my_data <- read_excel("C:/Users/Kallan/Downloads/NDCP2022.xlsx")
+
+head(my_data)
+```
+
+# Summary
+
+```{r}
+id_cols <- c("STATE_NAME","STATE_ABBREVIATION","COUNTY_NAME","COUNTY_FIPS_CODE","STUDYYEAR")
+center_cols <- names(my_data)[stringr::str_starts(names(my_data), "MC") | stringr::str_starts(names(my_data), "_75C")]
+
+center_only <- dplyr::select(my_data, dplyr::any_of(id_cols), dplyr::any_of(center_cols))
+
+```
+
+
+The dataset is a county-year panel from the National Database of Childcare Prices, which provides childcare price estimates and contextual features for each county over various years in the United States. Every entry specifies a state county and academic year, then offers price metrics categorized by provider type and age group of children. Center-based prices are displayed as median figures in columns starting with MC and as seventy-fifth percentile figures in columns starting with 75C. Comparable domains are present for family childcare residences, including data quality markers and flags. Extra columns offer demographic and labor market context, including household numbers, labor force participation, and racial and ethnic proportions, along with state-level aggregates marked by a state suffix. The framework facilitates comparisons between center-based and home care price trend analyses over time and connections between prices and regional economic factors
+
+## Question
+How do full-time median childcare prices differ between center-based and in-home settings in California?
+
+```{r}
+ca <- my_data |> 
+  filter(STATE_ABBREVIATION == "CA")
+
+head(ca)
+```
+
+
+```{r}
+ ggplot(ca, aes(x = STUDYYEAR, y = MHI)) +
+  geom_line(linewidth = 1.1) +
+  geom_point(size = 2) +
+  scale_y_continuous(labels = scales::label_dollar(accuracy = 1)) +
+  labs(
+    title = "California Full-Time Median Childcare Prices",
+    subtitle = "Center-based vs In-home (median monthly price)",
+    x = "Year", y = "USD", color = "Setting"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "top")
+
+```
+
+
+
