@@ -1,0 +1,278 @@
+---
+title: "Lab 7: Functions + Fish"
+author: "Kallan Torell"
+format: html
+editor: source
+embed-resources: true
+execute: 
+  code-tools: true
+  eval: true
+  echo: true
+---
+
+The goal of this lab is learn more about exploring missing data and writing
+modular code.
+
+```{r}
+#| label: setup
+
+library(tidyverse)
+fish <- read.csv("BlackfootFish.csv")
+glimpse(fish)
+```
+
+## The Data
+
+This lab's data concerns mark-recapture data on four species of trout from the
+Blackfoot River outside of Helena, Montana. These four species are
+**rainbow trout (RBT)**, **westslope cutthroat trout (WCT)**, **bull trout**,
+and **brown trout**.
+
+Mark-recapture is a common method used by ecologists to estimate a population's
+size when it is impossible to conduct a census (count every animal). This method
+works by *tagging* animals with a tracking device so that scientists can track
+their movement and presence.
+
+## Data Exploration
+
+The measurements of each captured fish were taken by a biologist on a raft in
+the river. The lack of a laboratory setting opens the door to the possibility of
+measurement errors.
+
+**1. Let's look for missing values in the dataset. Output ONE table that answers BOTH of the following questions:**
+
++ **How many observations have missing values?**
++ **What variable(s) have missing values present?**
+
+::: callout-tip
+# You should use `across()`!
+:::
+
+```{r}
+#| label: find-missing-values
+
+fish |>
+  summarize(
+    across(
+      .cols  = everything(),
+      .fns   = ~ sum(is.na(.)),
+      .names = "missing_{col}"
+    )
+  ) |>
+  pivot_longer(
+    cols      = everything(),
+    names_to  = "variable",
+    values_to = "n_missing"
+  ) |>
+  mutate(
+    variable = str_remove(variable, "^missing_")
+  ) |>
+  filter(n_missing > 0)
+
+# https://www.rdocumentation.org/packages/tidyselect/versions/1.2.1/topics/everything
+# been using everything() and i dont recall using it in class since I missed last week but it selects all remaining variables after other operations have been applied, like in this case pivot_longer() or other cases could be select() or across()
+```
+
+
+
+**2. Use a pivot to transform your summary table from Question 1 into a table that is easier to read.** 
+
+```{r}
+#| label: pivot-summary-table
+
+fish |>
+  summarize(
+    across(
+      .cols  = everything(),
+      .fns   = ~ sum(is.na(.)),
+      .names = "missing_{col}"
+    )
+  ) |>
+  pivot_longer(
+    cols      = everything(),
+    names_to  = "variable",
+    values_to = "count"
+  ) |>
+  mutate(variable = str_remove(variable, "^missing_")) |>
+  pivot_wider(
+    names_from   = variable,
+    values_from  = count,
+    values_fill  = 0,
+    names_prefix = "missing_"
+  )
+
+```
+
+
+**3. Create ONE thoughtful visualization that explores the frequency of missing values across the different years, sections, and trips.**
+
+```{r}
+#| label: visual-of-missing-values-over-time
+
+library(ggplot2)
+
+missing_weight_by_year_section_trip <-
+  fish |>
+  filter(is.na(weight)) |>
+  count(year, section, trip, name = "n_missing")
+
+
+ggplot(
+  missing_weight_by_year_section_trip,
+  aes(x = factor(trip), y = n_missing, fill = section)
+) +
+  geom_col(position = "dodge") +
+  facet_wrap(~ year, scales = "free_y") +
+  labs(
+    title    = "Missing Weight Values by Trip and Section",
+    subtitle = "Faceted by year; only rows with missing weight are included",
+    x        = "Trip",
+    y        = "Count of missing weights",
+    fill     = "Section"
+  )
+
+#https://ggplot2.tidyverse.org/reference/position_dodge.html
+# posotion dodge for geom_col isnt in class i believe but for a plot like this it just makes it easier to read, so for this plot, the bars will be placed side by side and not vertically stacked, I thought it would be easier to read
+  
+```
+
+```{r}
+missing_by_year <-
+  fish |>
+  filter(is.na(weight)) |>
+  count(year, section, name = "n_missing")
+
+ggplot(missing_by_year, aes(x = year, y = n_missing, color = section, group = section)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Missing weight counts by year",
+    x = "Year", y = "Count of missing weights", color = "Section"
+  )
+
+```
+
+
+
+## Rescaling the Data
+
+If I wanted to rescale every quantitative variable in my dataset so that they
+only have values between 0 and 1, I could use this code:
+
+```{r}
+#| echo: true
+#| eval: false
+
+fish <- fish |> 
+  mutate(length = (length - min(length, na.rm = TRUE)) / 
+           (max(length, na.rm = TRUE) - min(length, na.rm = TRUE)), 
+         weight = (weight - min(weight, na.rm = TRUE)) / 
+           (max(weight, na.rm = TRUE) - min(length, na.rm = TRUE)))
+```
+
+
+**4. Transform the repeated process above into a `rescale_01()` function. Your function should...**
+
++ **... take a single vector as input.**
++ **... return the rescaled vector.**
+
+```{r}
+#| label: write-rescale-function
+
+rescale_01 <- function(x, na.rm = TRUE) {
+  if (!is.numeric(x)) stop("`x` must be numeric.")
+  if (length(x) <= 1) stop("`x` must have length > 1.")
+
+  if (all(is.na(x))) return(x)
+  r <- range(x, na.rm = na.rm)
+  rng <- r[2] - r[1]
+  if (rng == 0) return(ifelse(is.na(x), NA_real_, 0))
+  (x - r[1]) / rng
+}
+
+
+```
+
+::: callout-tip
+# Efficiency 
+
+Think about the efficiency of the function you wrote. Are you calling the
+**same** function multiple times? You might want to look into the `range()` 
+function. 
+:::
+
+**5. Let's incorporate some input validation into your function. Modify your previous code so that the function stops if ...**
+
++ **... the input vector is not numeric.**
++ **... the length of the input vector is not greater than 1.**
+
+::: callout-tip
+# Modify Previous Code
+
+Do not create a new code chunk here -- simply add these stops to your function
+above!
+:::
+
+## Test Your Function
+
+**6. Run the code below to test your function. Verify that the maximum of your rescaled vector is 1 and the minimum is 0!**
+
+```{r}
+#| label: verify-rescale-function
+
+x <- c(1:25, NA)
+
+rescaled <- rescale_01(x)
+min(rescaled, na.rm = TRUE)
+max(rescaled, na.rm = TRUE)
+```
+
+Next, let's test the function on the `length` column of the `BlackfootFish` data.
+
+**7. The code below makes a histogram of the original values of `length`. Add a plot of the rescaled values of `length`. Output your plots side-by-side, so the reader can confirm the only aspect that has changed is the scale.**
+
+::: callout-warning
+This will require you to call your `rescale_01()` function within a `mutate()`
+statement in order to create a `length_scaled` variable.
+:::
+
+```{r}
+#| label: compare-original-with-rescaled-lengths
+
+
+
+# Code for Q7 plot.
+
+fish |>
+  mutate(length_scaled = rescale_01(length)) |>
+  select(length, length_scaled) |>
+  pivot_longer(everything(), names_to = "measure", values_to = "value") |>
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 30, na.rm = TRUE) +
+  facet_wrap(
+    ~ measure,
+    scales = "free_x",
+    labeller = as_labeller(c(
+      length = "Original length (mm)",
+      length_scaled = "Rescaled length (0–1)"
+    ))
+    #https://r-charts.com/ggplot2/facets/ 
+    # I used this online source just for the many arguments of facet_wrap and to make sure I was using it right
+  ) +
+  labs(
+    title = "Fish length: original vs rescaled",
+    x = NULL, y = "Count"
+  )
+
+
+
+
+```
+
+::: callout-tip
+1. Set the y-axis limits for both plots to go from 0 to 4000 to allow for direct comparison across plots.
+
+2. Pay attention to `binwidth`!
+
+3. Use a Quarto code chunk option to put the plots side-by-side.
+:::
