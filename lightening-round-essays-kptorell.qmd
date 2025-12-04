@@ -7,22 +7,22 @@ editor: visual
 
 **Answer each of the following questions with *one sentence* including a brief explanation.**
 
-1. Finish the sentence with another student’s name: "If [Name of Student] doesn’t earn an A, then nobody should, because..." Explain your choice and your reasoning.
+1.  Finish the sentence with another student’s name: "If \[Name of Student\] doesn’t earn an A, then nobody should, because..." Explain your choice and your reasoning.
 
 "If Jake Lugenbuehl does not earn an A, then nobody should, because he asks the most questions by far and when he has been my activity partner he has demonstrated immense competence and communication skills."
 
-2. What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.
+2.  What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.
 
-The most difficult part of this class has not been any specific topic, but more has been an overall syntax/memorization issue. I have had a hard time formatting my code when outside of class, while in class for practice activities I have no issue at all; remembering which arguments are part of filter() or mutate() or the geom functions, and have often had to look up the syntax and arguments for those types of functions. My major is Industrial Engineering so I have extensive experience with python, so in my mind I sometimes have to convert python to R in my head or approach them similarly and focus on just writing it in R. 
+The most difficult part of this class has not been any specific topic, but more has been an overall syntax/memorization issue. I have had a hard time formatting my code when outside of class, while in class for practice activities I have no issue at all; remembering which arguments are part of filter() or mutate() or the geom functions, and have often had to look up the syntax and arguments for those types of functions. My major is Industrial Engineering so I have extensive experience with python, so in my mind I sometimes have to convert python to R in my head or approach them similarly and focus on just writing it in R.
 
-3. What was the easiest part of the class for you? Explain why.
+3.  What was the easiest part of the class for you? Explain why.
 
-The easiest part of this class so far has been the functions with lubridate modules. The PA and lab involving dates was one of the more straightforward parts of the class so far, and felt easy to grasp even outside of class without reviewing notes. 
+The easiest part of this class so far has been the functions with lubridate modules. The PA and lab involving dates was one of the more straightforward parts of the class so far, and felt easy to grasp even outside of class without reviewing notes. The "problem solving" aspect also was the most entertaining I would say, especially the heist we had to solve in class using celebrity names and the different time-zones we worked with. It felt like a true fun puzzle. The murder mystery lab was also easier and more fun for me, I loved the puzzle aspect of it and also enjoyed the open ended way the lab started. You had to really understand the SQL database to understand where to start.
 
-4. What part of the class surprised or interested you the most? Explain why.
+4.  What part of the class surprised or interested you the most? Explain why.
 
-I think the part that surprised me the most were the similarities and differences in coding languages. I have learned python before for statistical and quantitative analysis, so I assumed R would be very similarly structured, however, I learned quickly that wouldn't be the case. Through two weeks I noticed the subtle differences and had to adapt fast to be successful in the class.  
+I think the part that surprised me the most were the similarities and differences in coding languages. I have learned python before for statistical and quantitative analysis, so I assumed R would be very similarly structured, however, I learned quickly that wouldn't be the case. Through two weeks I noticed the subtle differences and had to adapt fast to be successful in the class. Also, the most fun part of the class to me had to be the functions we did at the end of the quarter. The long-winded function examples we did
 
-5. Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.
+5.  Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.
 
-One piece of advice I would give a student at the start of the quarter is to pay attention to all check-ins Dr. T has posted. They are not little cute check-ins to keep you busy and focused on the content, they are VERY important to your coursework and prepare you for all in-class activities.  
+One piece of advice I would give a student at the start of the quarter is to pay attention to all check-ins Dr. T has posted. They are not little cute check-ins to keep you busy and focused on the content, they are VERY important to your coursework and prepare you for all in-class activities. The check-ins are essential to the class and understanding the background of what we do each class period, and what the material will be on, if you do not do them consistently then the class structure becomes rather hard to follow along with. It would be like buying a random book without looking at the title or synopsis and expecting it to be a sci-fi book, and then it ends up being Pride and Prejudice.
