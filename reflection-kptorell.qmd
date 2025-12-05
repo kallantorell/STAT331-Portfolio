@@ -294,7 +294,18 @@ ca_childcare <- counties |>
 
 ```{r}
 #| label: wd-5-right
+#| lab 5 problem gym investigation
+suspects <- person |> 
+  select(-name) |>
+  right_join(gym_checkins, by = c("id" = "person_id")) |>
+  right_join(drivers_license, by = c("license_id" = "id")) |>
+  transmute(person_id = id.x, name, plate_number, gender)
 
+final_suspect <- suspects |>
+  filter(str_detect(plate_number, "H42W"), gender == "male")
+
+final_suspect
+#revised: originally did left joins but I tend to use those too much so made a right join alternative
 ```
 
 -   `left_join()` **or** `right_join()` Example 2
@@ -389,10 +400,13 @@ dataplot <- ca_childcare |>
 #| Lab 7 Problem 2
 
 fish |>
+  summarize(across(everything(), ~ sum(is.na(.)), .names = "missing_{col}")) |>
+  pivot_longer(everything(), names_to = "variable", values_to = "count") |>
+  mutate(variable = str_remove(variable, "^missing_")) |>
   pivot_wider(
-    names_from   = variable,
-    values_from  = count,
-    values_fill  = 0,
+    names_from = variable,
+    values_from = count,
+    values_fill = 0,
     names_prefix = "missing_"
   )
 ```
@@ -469,7 +483,15 @@ rescale_01 <- function(x, na.rm = TRUE) {
 
 ```{r}
 #| label: r-3-example
+#| Lab 7 Problem 4
 
+rescale_01 <- function(x, na.rm = TRUE) {
+  if (all(is.na(x))) return(x)  # Handles all NA case
+  r <- range(x, na.rm = na.rm)
+  rng <- r[2] - r[1]
+  if (rng == 0) return(ifelse(is.na(x), NA_real_, 0))  # Handles zero range case
+  (x - r[1]) / rng
+}
 ```
 
 -   Example (function stops)
@@ -800,7 +822,16 @@ ca_childcare |>
 
 ```{r}
 #| label: dvs-6-ex-3
+#| Lab 4 Problem 5
 
+median_income_by_region <- ca_childcare |>
+  group_by(census_region) |>
+  summarise(
+    `2008` = median(mhi_2018[study_year == 2008], na.rm = TRUE),
+    `2018` = median(mhi_2018[study_year == 2018], na.rm = TRUE)
+  ) |>
+  arrange(desc(`2018`))
+#Thoughts: arrange is an intuitive ordering strategy for a date based table
 ```
 
 **DVS-7: I show creativity in my tables.**
@@ -816,7 +847,14 @@ ca_childcare |>
 
 ```{r}
 #| label: dvs-7-ex-2
+#| Lab 4 Problem 5
 
+ca_childcare |>
+  group_by(census_region) |>
+  summarise(
+    `2008` = median(mhi_2018[study_year == 2008], na.rm = TRUE),
+    `2018` = median(mhi_2018[study_year == 2018], na.rm = TRUE)
+  )
 ```
 
 ## Program Efficiency
@@ -884,7 +922,14 @@ pivot_table <- function(df, row_var, col_var) {
 
 ```{r}
 #| label: pe-2-3
+#| Lab 8 Problem 1
 
+rescale_column <- function(df, cols) {
+  df |>
+    dplyr::mutate(
+      dplyr::across({{ cols }}, rescale_01)
+    )
+}
 ```
 
 **PE-3:I can use iteration to reduce repetition in my code.**
@@ -916,14 +961,26 @@ pivot_table <- function(df, row_var, col_var) {
 
 ```{r}
 #| label: pe-4-1
+#| Lab 4 Problem 5
 
+ca_childcare |>
+  group_by(census_region) |>
+  summarise(median_price = median(mc_infant, na.rm = TRUE))
+#uses summarise() and not something like summarise_at() which is deprecated
 ```
 
 -   I can connect a data wrangling pipeline into a `ggplot()`
 
 ```{r}
 #| label: pe-4-2
+#| Lab 4 Problem 7
 
+ca_childcare |>
+  select(census_region, study_year, mc_infant, mc_toddler, mc_preschool) |>
+  pivot_longer(mc_infant:mc_preschool, names_to = "age", values_to = "price") |>
+  mutate(age = recode(age, mc_infant = "Infant", mc_toddler = "Toddler", mc_preschool = "Preschool")) |>
+  ggplot(aes(study_year, price, color = census_region)) +
+  geom_point()
 ```
 
 ## Data Simulation & Statisical Models
@@ -989,7 +1046,7 @@ Throughout finding examples in my code, I realized there are certain categories 
 
 <!-- How did you extended your thinking throughout the course? How did you extend your thinking on the code examples you have provided in your portfolio? -->
 
-At the start of this course, I approached all problems the same way I would a python data analytics problem. I realized quickly that I cannot approach R and Python in the same way, and needed to learn how to approach problems in R studio in a different way, which will help me expand this course. Many of the problems in the portfolio so far I have approached as python problems, and to diversify my thinking more, i need to learn to approach R seperately.
+At the start of this course, I approached all problems the same way I would a python data analytics problem. I realized quickly that I cannot approach R and Python in the same way, and needed to learn how to approach problems in R studio in a different way, which will help me expand this course. Many of the problems in the portfolio so far I have approached as python problems, and to diversify my thinking more, i need to learn to approach R separately.
 
 ## Peer Support & Collaboration
 

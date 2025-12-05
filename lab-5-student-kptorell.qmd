@@ -154,6 +154,19 @@ final_suspect <- suspects |>
 final_suspect
 ```
 
+```{r}
+suspects <- person |> 
+  select(-name) |>
+  right_join(gym_checkins, by = c("id" = "person_id")) |>
+  right_join(drivers_license, by = c("license_id" = "id")) |>
+  transmute(person_id = id.x, name, plate_number, gender)
+
+final_suspect <- suspects |>
+  filter(str_detect(plate_number, "H42W"), gender == "male")
+
+final_suspect
+#revised: originally did left joins but I tend to use those too much so made a right join alternative
+```
 
 **Follow the evidence to the person responsible for the murder, building a report as you go.**
 Hint: Make sure you check for interviews with any suspects!
