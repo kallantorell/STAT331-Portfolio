@@ -1,6 +1,6 @@
 ---
 title: "STAT 331 Portfolio"
-author: "Your Name Goes Here"
+author: "Kallan Torell"
 format: html 
 embed-resources: true
 layout: margin-left
@@ -186,35 +186,82 @@ final_suspect <- suspects |>
 
 ```{r}
 #| label: wd-4-numeric-ex-1
+#| Challenge 7 Problem 1
 
+fish <- fish |>
+  mutate(length_cm = length / 10)
 ```
 
 -   Numeric Example 2
 
 ```{r}
 #| label: wd-4-numeric-ex-2
+#| Lab 4 Problem 3
 
+ca_childcare <- ca_childcare |> 
+  mutate(county_name = str_remove(county_name, " County"))
 ```
 
 -   Factor Example 1 (renaming levels)
 
 ```{r}
 #| label: wd-4-factor-ex-1
+#| Lab 4 Problem 7
 
+dataplot <- ca_childcare |>
+  mutate(
+    age = recode(age,
+                 mc_infant = "Infant",
+                 mc_toddler = "Toddler",
+                 mc_preschool = "Preschool"),
+    age = factor(age, levels = c("Infant", "Toddler", "Preschool"))
+  )
 ```
 
 -   Factor Example 2 (reordering levels)
 
 ```{r}
 #| label: wd-4-factor-ex-2
+#| Lab 4 Problem 4
+superior_counties <- c("Butte","Colusa","El Dorado",
+                       "Glenn","Lassen","Modoc",
+                       "Nevada","Placer","Plumas",
+                       "Sacramento","Shasta","Sierra","Siskiyou",
+                       "Sutter","Tehama","Yolo","Yuba")
 
+north_coast_counties <- c("Del Norte","Humboldt","Lake",
+                          "Mendocino","Napa","Sonoma","Trinity")
+
+san_fran_counties <- c("Alameda","Contra Costa","Marin",
+                       "San Francisco","San Mateo","Santa Clara",
+                       "Solano")
+
+n_san_joaquin_counties <- c("Alpine","Amador","Calaveras","Madera",
+                            "Mariposa","Merced","Mono","San Joaquin",
+                            "Stanislaus","Tuolumne")
+
+central_coast_counties <- c("Monterey","San Benito","San Luis Obispo",
+                            "Santa Barbara","Santa Cruz","Ventura")
+
+s_san_joaquin_counties <- c("Fresno","Inyo","Kern","Kings","Tulare")
+
+inland_counties <- c("Riverside","San Bernardino")
+
+la_county <- "Los Angeles"
+
+orange_county  <- "Orange"
+
+san_diego_imperial_counties <- c("Imperial","San Diego")
 ```
 
 -   Character (example must use functions from **stringr**)
 
 ```{r}
 #| label: wd-4-string
+#| Lab 7 Problem 2
 
+dataplot <- dataplot |>
+  mutate(variable = str_remove(variable, "^missing_"))
 ```
 
 -   Date (example must use functions from **lubridate**)
@@ -341,7 +388,15 @@ dataplot <- ca_childcare |>
 
 ```{r}
 #| label: wd-7-wide
+#| Lab 7 Problem 2
 
+fish |>
+  pivot_wider(
+    names_from   = variable,
+    values_from  = count,
+    values_fill  = 0,
+    names_prefix = "missing_"
+  )
 ```
 
 ## Reproducibility
@@ -396,7 +451,18 @@ lowest_price_2018 <- ca_childcare |>
 
 ```{r}
 #| label: r-2-3
+#| Lab 7 Problem 4
 
+rescale_01 <- function(x, na.rm = TRUE) {
+  if (!is.numeric(x)) stop("`x` must be numeric.")
+  if (length(x) <= 1) stop("`x` must have length > 1.")
+  
+  if (all(is.na(x))) return(x)
+  r <- range(x, na.rm = na.rm)
+  rng <- r[2] - r[1]
+  if (rng == 0) return(ifelse(is.na(x), NA_real_, 0))
+  (x - r[1]) / rng
+}
 ```
 
 **R-3: I can write robust programs that are resistant to changes in inputs.**
@@ -412,7 +478,14 @@ lowest_price_2018 <- ca_childcare |>
 
 ```{r}
 #| label: r-3-function-stops
+#| Lab 8 Problem 1
 
+rescale_column <- function(df, cols) {
+  df |>
+    dplyr::mutate(
+      dplyr::across({{ cols }}, rescale_01)
+    )
+}
 ```
 
 ## Data Visualization & Summarization
@@ -586,8 +659,8 @@ ggplot(data = surveys, aes(x = weight, y = species)) +
     y = "Weight (g)",
     title = "Distribution of Weight by Species"
   ) + 
-  geom_jitter(color = 'steelblue') + 
-  theme(axis.text.x = element_text(angle = 45))
+  geom_jitter(color = 'steelblue') 
+  #(revised:removed angle argument)
 ```
 
 -   I can reorder my legend to align with the colors in my plot
@@ -663,7 +736,16 @@ lowest_price_2018 <- ca_childcare |>
 
 ```{r}
 #| label: dvs-4-across
+#| Lab 7 Problem 1
 
+fish |>
+  summarize(
+    across(
+      .cols  = everything(),
+      .fns   = ~ sum(is.na(.)),
+      .names = "missing_{col}"
+    )
+  )
 ```
 
 **DVS-5: I can find summaries of variables across multiple groups.**
@@ -672,14 +754,32 @@ lowest_price_2018 <- ca_childcare |>
 
 ```{r}
 #| label: dvs-5-1
+#| Lab 3 Problem 10
 
+clean_teacher_evals |>
+  filter(question_no == 901) |>
+  group_by(teacher_id) |>
+  summarize(
+    n_courses = n_distinct(course_id),
+    avg_q1 = mean(SET_score_avg, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  filter(n_courses >= 5)
 ```
 
 -   Example 2
 
 ```{r}
 #| label: dvs-5-2
+#| Lab 4 Problem 5
 
+ca_childcare |>
+  group_by(census_region) |>
+  summarise(
+    `2008` = median(mhi_2018[study_year == 2008], na.rm = TRUE),
+    `2018` = median(mhi_2018[study_year == 2018], na.rm = TRUE)
+  ) |>
+  arrange(desc(`2018`))
 ```
 
 **DVS-6: I can create tables which make my summaries clear to the reader.**
@@ -729,7 +829,10 @@ lowest_price_2018 <- ca_childcare |>
 
 ```{r}
 #| label: pe-1-one-call
+#| Lab 8 Problem 1
 
+rescale_column(penguins, 
+               cols = c(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g))
 ```
 
 -   using `across()`
@@ -752,14 +855,31 @@ lowest_price_2018 <- ca_childcare |>
 
 ```{r}
 #| label: pe-2-1
+#| Challenge 7 Problem 2
 
+flag_outside_na <- function(x, min_val, max_val) {
+  if (!is.numeric(x)) stop("`x` must be numeric.")
+  if (length(x) == 0) return(x)
+  x[!between(x, min_val, max_val) & !is.na(x)]
+}
 ```
 
 -   Example 2: Function that operates on data frames
 
 ```{r}
 #| label: pe-2-2
+#| Lab 8 Problem 2
 
+pivot_table <- function(df, row_var, col_var) {
+  df |>
+    dplyr::count({{ row_var }}, {{ col_var }}) |>
+    tidyr::pivot_wider(
+      names_from = {{ col_var }},
+      values_from = n,
+      values_fill = 0
+    ) |>
+    janitor::adorn_totals(where = c("row", "col"))
+}
 ```
 
 -   Example 3: Function that operates on vectors *or* data frames
@@ -832,21 +952,31 @@ lowest_price_2018 <- ca_childcare |>
 
 ```{r}
 #| label: dsm-2-1
+#| Lab 1
 
+t.test(len ~ supp, data = ToothGrowth,
+       var.equal = FALSE, 
+       alternative = "two.sided")
 ```
 
 -   Example 2
 
 ```{r}
 #| label: dsm-2-2
+#| Lab 2 Problem 17
 
+species_mod <- aov(weight ~ species, data = surveys)
+summary(species_mod)
 ```
 
 -   Example 3
 
 ```{r}
 #| label: dsm-2-3
+#| Lab 4 Problem 9
 
+reg_mod1 <- lm(mc_infant ~ mhi_2018, data = ca_childcare)
+summary(reg_mod1)
 ```
 
 ## Revising My Thinking
