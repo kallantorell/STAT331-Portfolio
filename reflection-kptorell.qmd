@@ -1,5 +1,5 @@
 ---
-title: "STAT 331 Portfolio"
+title: "STAT 331 Final Portfolio"
 author: "Kallan Torell"
 format: html 
 embed-resources: true
@@ -339,8 +339,6 @@ ca_childcare <- counties |>
 checkins <- get_fit_now_check_in |>
   filter(check_in_date == "20180109") |>
   select(membership_id)
-#https://dplyr.tidyverse.org/reference/select.html
-#just needed syntax help and filtering help
 gym_checkins <- members |>
   inner_join(checkins, by = c("id" = "membership_id")) |>
   select(person_id, name)
