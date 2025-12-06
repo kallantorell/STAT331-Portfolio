@@ -146,6 +146,23 @@ clean_teacher_evals <- teacher_evals |>
 clean_teacher_evals
 ```
 
+
+```{r}
+#| label: data-cleaning - continued
+original_data <- teacher_evals
+
+
+kept_data <- teacher_evals |>
+  filter(no_participants >= 10)
+
+
+excluded_data <- original_data |>
+  anti_join(kept_data, by = c("course_id", "teacher_id", "question_no"))
+#Revised/Extended thinking: good moment to use an anti_join to understand what data was excluded during cleaning
+```
+
+
+
 **6. How many unique instructors and unique courses are present in the cleaned dataset?**
 
 ```{r}
@@ -240,6 +257,20 @@ question_1_summary |>
   
 
 ```
+
+```{r}
+#| label: question-1-high-low
+high_rated_teachers <- clean_teacher_evals |>
+  filter(question_no == 901, SET_score_avg >= 4.5) |>
+  distinct(teacher_id)
+
+
+all_data_for_high_teachers <- clean_teacher_evals |>
+  semi_join(high_rated_teachers, by = "teacher_id")
+#revised: this question is a great time to use a semi_join, and extend the question. After cleaning, someone might want to find all or any records for teachers who have at least one highly- rated course.
+```
+
+
 
 **11. Which instructors with one year of experience had the highest and lowest average percentage of students failing in the current semester across all their courses?**
 

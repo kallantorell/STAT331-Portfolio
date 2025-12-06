@@ -177,7 +177,15 @@ final_suspect <- suspects |>
 
 ```{r}
 #| label: wd-3-date
-
+#| Lab 5 - Crime Scene Investigation
+crime_scene_report |>
+  mutate(date = ymd(date)) |>
+  filter(
+    date == ymd("2018-01-15"),
+    month(date) == 1,
+    year(date) == 2018
+  )
+#revised: originally, I changed all the dates to strings and parsed through them manually, however, after your comments I saw that lubridate would make it easier and this lab is the best example of using lubridate
 ```
 
 **WD-4: I can modify existing variables and create new variables in a dataframe for a *variety* of data types (e.g., numeric, integer, character, factor, date).**
@@ -268,7 +276,17 @@ dataplot <- dataplot |>
 
 ```{r}
 #| label: wd-4-date
+#| Lab 5 - Check-in dates
+get_fit_now_check_in |>
+  mutate(
+    check_in_date = ymd(check_in_date),
+    check_in_month = month(check_in_date, label = TRUE),
+    check_in_day = wday(check_in_date, label = TRUE),
+    days_since = as.numeric(ymd("2018-01-15") - check_in_date)
+  ) |>
+  filter(check_in_date == ymd("2018-01-09"))
 
+#revised: once again, i chose to filter through everything using strings and not lubridate(). lubridate() makes this much easer and better looking as you recommended in the portfolio meeting.
 ```
 
 **WD-5: I can use mutating joins to combine multiple dataframes.**
@@ -364,14 +382,32 @@ gym_checkins
 
 ```{r}
 #| label: wd-6-semi
+#| Lab 3 question 10
+high_rated_teachers <- clean_teacher_evals |>
+  filter(question_no == 901, SET_score_avg >= 4.5) |>
+  distinct(teacher_id)
 
+
+all_data_for_high_teachers <- clean_teacher_evals |>
+  semi_join(high_rated_teachers, by = "teacher_id")
+#revised: this question is a great time to use a semi_join, and extend the question. After cleaning, someone might want to find all or any records for teachers who have at least one highly rated course.
 ```
 
 -   `anti_join()`
 
 ```{r}
 #| label: wd-6-anti
+#| Lab 3 question 5
+original_data <- teacher_evals
 
+
+kept_data <- teacher_evals |>
+  filter(no_participants >= 10)
+
+
+excluded_data <- original_data |>
+  anti_join(kept_data, by = c("course_id", "teacher_id", "question_no"))
+#Revised/Extended thinking: good moment to use an anti_join to understand what data was excluded during cleaning
 ```
 
 **WD-7: I can pivot dataframes from long to wide and visa versa**
@@ -417,11 +453,15 @@ fish |>
 
 The following assignments satisfy the above criteria:
 
--   Example 1
--   Example 2
--   Example 3
--   Example 4
--   Example 5
+-   Example 1 – Lab 1, Question 2: Practicing running code with built-in data
+
+    Example 2 – Lab 2, Question 1: Loading surveys.csv with readr
+
+    Example 3 – Challenge 2, setup: Reusing Lab 2’s reproducible setup
+
+    Example 4 – Lab 3, Questions 1–2: Using here() to load teacher_evals
+
+    Example 5 – Lab 7, setup: Loading and inspecting BlackfootFish.csv
 
 **R-2: I can write well documented and tidy code.**
 
@@ -603,17 +643,25 @@ ggplot(ca_childcare, aes(x = mhi_2018, y = mc_infant)) +
 
 ```{r}
 #| label: dvs-2-ex-1
-#| lab 2 problem 16
+#| Lab 8: plot-function chunk
 
-ggplot(data = surveys, aes(x = weight, y = species)) +
-  geom_boxplot(alpha = 0.5) +
-  labs(
-    x = "Species",
-    y = "Weight (g)",
-    title = "Distribution of Weight by Species"
-  ) + 
-  geom_jitter(color = 'steelblue') + 
-  theme(axis.text.x = element_text(angle = 45))
+boxplot_plot <- function(df, x, y, fill_var, title = NULL) {
+  if (missing(fill_var)) {
+    plot_q3 <- df |>
+      ggplot2::ggplot(ggplot2::aes(x = {{ x }}, y = {{ y }}, fill = {{ x }})) +
+      ggplot2::geom_boxplot() +
+      ggplot2::theme_light() +
+      ggplot2::guides(fill = "none")
+  } else {
+    plot_q3 <- df |>
+      ggplot2::ggplot(ggplot2::aes(x = {{ x }}, y = {{ y }}, fill = {{ fill_var }})) +
+      ggplot2::geom_boxplot() +
+      ggplot2::theme_light()
+  }
+
+  if (!is.null(title)) plot_q3 <- plot_q3 + ggplot2::labs(title = title)
+  plot_q3
+}
 
 ```
 
@@ -663,7 +711,7 @@ ggplot(data = surveys,
     title = "Scatterplot of Weight vs Hindfoot Length by Species",
     subtitle = "Weight (g) on y-axis"
   ) 
-
+#Revision: removed angle text argument, fixed "head tilt" explained by instructor when reading an axis label
 ```
 
 -   I can modify the text in my plot to be more readable
@@ -687,7 +735,18 @@ ggplot(data = surveys, aes(x = weight, y = species)) +
 
 ```{r}
 #| label: dvs-2-ex-5
+#| style-plot-test-2 Revised
+penguins_releveled <- penguins |>
+  dplyr::mutate(sex = forcats::fct_relevel(sex, "female", "male"))
 
+boxplot_plot(penguins_releveled, species, body_mass_g, fill_var = sex, 
+             title = "Body Mass by Species and Sex") |>
+  style_plot(theme_fn = theme_light,
+             palette_fn = function(n) viridisLite::mako(n),
+             aesthetic = "fill")
+#Revision: through independent research and instructor noting my lack of legend ordering, I revised the above plot i made and created a releveled version using https://www.rdocumentation.org/packages/forcats/versions/1.0.1/topics/fct_relevel
+# uses forcats package and manually reorders the levels of a factor variable
+# releveling sex makes the legend order more intentional
 ```
 
 **DVS-3: I show creativity in my visualizations**
@@ -726,14 +785,43 @@ ggplot(data = surveys, aes(x = species, y = weight)) +
 
 ```{r}
 #| label: dvs-3-2
+#| Lab 8: style-plot-test-1
+library(RColorBrewer)
 
+penguin_counts <- penguins |>
+  count(species, sex)
+
+ggplot(penguin_counts, aes(x = species, y = n, fill = sex)) +
+  geom_col(position = "dodge") +
+  geom_text(
+    aes(label = n),
+    position = position_dodge(width = 0.85),
+    vjust = -0.3,
+    size = 3
+  ) +
+  labs(
+    title = "Penguin counts by species and sex",
+    x = "Species",
+    y = "Count"
+  )
+#revised: added gemo_text and geom_col to add to aesthetic of plot
 ```
 
 -   I can choose creative geometries (e.g., `geom_segment()`, `geom_ribbon)()`)
 
 ```{r}
 #| label: dvs-3-3
-
+#| lab 4 problem 7
+ggplot(dataplot, aes(study_year, price, color = census_region)) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(method = "loess", se = FALSE) +
+  facet_wrap(~ age, nrow = 1) +
+  scale_x_continuous(breaks = seq(2008, 2018, 2)) +
+  labs(
+    title = "Weekly Median Price for Center-Based Childcare ($)",
+    x = "Study Year", y = "Median Weekly Price ($)",
+    color = "California Region"
+  )
 ```
 
 **DVS-4: I can calculate numerical summaries of variables.**
@@ -808,7 +896,28 @@ ca_childcare |>
 
 ```{r}
 #| label: dvs-6-ex-1
+#| Lab 7: pivot-summary-table
 
+fish |>
+  summarize(
+    across(
+      .cols  = everything(),
+      .fns   = ~ sum(is.na(.)),
+      .names = "missing_{col}"
+    )
+  ) |>
+  pivot_longer(
+    cols      = everything(),
+    names_to  = "variable",
+    values_to = "count"
+  ) |>
+  mutate(variable = str_remove(variable, "^missing_")) |>
+  pivot_wider(
+    names_from   = variable,
+    values_from  = count,
+    values_fill  = 0,
+    names_prefix = "missing_"
+  )
 ```
 
 -   I can modify the text in my table to be more readable (e.g., bold face for column headers)
@@ -1039,6 +1148,8 @@ summary(reg_mod1)
 <!-- How did you revise your thinking throughout the course? How did you revise your thinking on the code examples you have provided in your portfolio? -->
 
 Throughout finding examples in my code, I realized there are certain categories that I seem to skip over or not utilize as much. Whether it be certain types of joins, not making plots with ggplot using only categorical variables, or just clustered functions, I need to diversify my coding approaches in the second half of the quarter.
+
+In the second half of the quarter, using the instructors notes and my own research I have been able to revise many parts of my thinking and my code. A great example of that was going back and looking at my Lab 5 original submission. The lab focuses on a database that has numerous time-based columns, which should immediately be an indicator to use lubridate for R, however, I changed all the dates to strings and manually filtered through them as if they were strings. As noted in the midterm meeting, I went back and looked for examples of changing my code to include lubridate, especially at the beginning where we were instructed to inspect crime-reports on specific dates to find witnesses to start off the investigation. Another example of revised thinking was using semi_join() and anti_join(). As I noted before, I very much leaned towards specific joins when I approached problems throughout the quarter, and took "direct" approaches when accessing columns. I used inner_join() frequently and distinguished my x and y ahead of time to directly include the data I wanted, when there are many times I could use a different approach to exclude unwanted data instead of taking the direct approach, which I displayed in Lab 3 through a couple revised thinking approaches.
 
 <!-- For the revisions included in your Portfolio, to help me understand the nature of your revisions, please denote somehow the feedback I provided you (e.g., boldface, italics, colored text) before your revisions. -->
 

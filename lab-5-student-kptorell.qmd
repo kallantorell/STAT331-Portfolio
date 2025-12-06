@@ -76,6 +76,21 @@ crime_scene_report |>
 
 ```
 
+```{r}
+#| label: inspecting-crime-scene-report
+
+crime_scene_report |>
+  mutate(date = ymd(date)) |>
+  filter(
+    date == ymd("2018-01-15"),
+    month(date) == 1,
+    year(date) == 2018
+  )
+#revised: originally, I changed all the dates to strings and parsed through them manually, however, after your comments I saw that lubridate would make it easier and this lab is the best example of using lubridate
+```
+
+
+
 When inspecting the crime scene report, we find that there was security footage, with 2 witnesses. The next step will be filtering for those 2 witnesses addresses, using the "last house" and the name Annabel
 
 ## Witness Reports
@@ -140,6 +155,23 @@ gym_checkins <- members |>
 
 gym_checkins
 ```
+
+
+```{r}
+get_fit_now_check_in |>
+  mutate(
+    check_in_date = ymd(check_in_date),
+    check_in_month = month(check_in_date, label = TRUE),
+    check_in_day = wday(check_in_date, label = TRUE),
+    days_since = as.numeric(ymd("2018-01-15") - check_in_date)
+  ) |>
+  filter(check_in_date == ymd("2018-01-09"))
+
+#revised: once again, i chose to filter through everything using strings and not lubridate(). lubridate() makes this much easer and better looking as you recommended in the portfolio meeting. 
+```
+
+
+
 
 ```{r}
 suspects <- gym_checkins |>

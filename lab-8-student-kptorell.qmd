@@ -293,17 +293,23 @@ this plot.
 #| label: style-plot-test-1
 library(RColorBrewer)
 
-my_plot <- ggplot(penguins, mapping = aes(x = species, fill = sex))+ 
-  geom_bar()
-style_plot(
-  my_plot,
-  theme_fn   = ggplot2::theme_bw,
-  palette_fn = function(n) RColorBrewer::brewer.pal(n, "Paired"),
-  aesthetic  = "fill",
-  n_colors   = 3
-)
+penguin_counts <- penguins |>
+  count(species, sex)
 
-
+ggplot(penguin_counts, aes(x = species, y = n, fill = sex)) +
+  geom_col(position = "dodge") +
+  geom_text(
+    aes(label = n),
+    position = position_dodge(width = 0.85),
+    vjust = -0.3,
+    size = 3
+  ) +
+  labs(
+    title = "Penguin counts by species and sex",
+    x = "Species",
+    y = "Count"
+  )
+#revised: added gemo_text and geom_col to add to aesthetic of plot
 ```
 
 **Test 2:** Your plot
@@ -323,3 +329,20 @@ boxplot_plot(penguins, species, body_mass_g, fill_var = sex,
 
 
 ```
+
+
+```{r}
+#| label: style-plot-test-2 Revised
+penguins_releveled <- penguins |>
+  dplyr::mutate(sex = forcats::fct_relevel(sex, "female", "male"))
+
+boxplot_plot(penguins_releveled, species, body_mass_g, fill_var = sex, 
+             title = "Body Mass by Species and Sex") |>
+  style_plot(theme_fn = theme_light,
+             palette_fn = function(n) viridisLite::mako(n),
+             aesthetic = "fill")
+#Revision: through independent research and instructor noting my lack of legend ordering, I revised the above plot i made and created a releveled version using https://www.rdocumentation.org/packages/forcats/versions/1.0.1/topics/fct_relevel
+# uses forcats package and manually reorders the levels of a factor variable
+# releveling sex makes the legend order more intentional
+```
+
