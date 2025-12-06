@@ -4,11 +4,12 @@ author: "Kallan Paul Torell"
 format: html
 editor: source
 embed-resources: true
-execute:
+execute: 
   code-tools: true
-  code-fold: true
-  echo: true
   eval: true
+  echo: true
+  error: false
+  warning: false
 ---
 
 # Part One: Set-up

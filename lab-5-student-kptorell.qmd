@@ -5,11 +5,13 @@ author: "Kallan Torell"
 format: html
 editor: source
 embed-resources: true
-execute:
+execute: 
   code-tools: true
-  code-fold: true
-  echo: true
+  code-fold: true 
   eval: true
+  echo: true
+  error: false
+  warning: false
 ---
 
 For this lab, you will be joining and filtering related datasets to solve a murder mystery!

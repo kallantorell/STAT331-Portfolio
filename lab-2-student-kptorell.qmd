@@ -6,9 +6,10 @@ editor: source
 embed-resources: true
 execute: 
   code-tools: true
-  code-fold: true
+  eval: true
   echo: true
-  embed-resources: true
+  error: false
+  warning: false
   
 ---
 

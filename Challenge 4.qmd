@@ -9,6 +9,8 @@ execute:
   code-fold: true
   echo: true
   eval: true
+  warnings: false
+  error: false
 ---
 
 ## Childcare Prices

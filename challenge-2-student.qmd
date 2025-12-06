@@ -10,6 +10,8 @@ execute:
   code-fold: true
   echo: true
   embed-resources: true
+  warnings: false
+  error: false
 ---
 
 For this week's Challenge, you will have two different options to explore.

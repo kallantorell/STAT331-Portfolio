@@ -88,6 +88,21 @@ rescale_column(penguins,
 
 ```
 
+```{r}
+#| label: rescale-column-test continued
+
+numeric_penguin_vars <- penguins |>
+  dplyr::select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g)
+
+penguin_means <- numeric_penguin_vars |>
+  purrr::map_dbl(~ mean(.x, na.rm = TRUE))
+
+penguin_means
+
+#revision: extended thinking on rescaling a column 
+#https://purrr.tidyverse.org/reference/map.html
+```
+
 ## Function to Create a Table
 
 We've started to get more sophisticated with making tables, so let's see if 
@@ -311,6 +326,17 @@ ggplot(penguin_counts, aes(x = species, y = n, fill = sex)) +
   )
 #revised: added gemo_text and geom_col to add to aesthetic of plot
 ```
+
+```{r}
+#| label: Plot parameter extra
+penguin_bill_vars <- penguins |>
+  dplyr::select(contains("bill"))
+
+penguin_bill_vars
+# revised but this was just an extra parameter I wanted to maybe test in the plots or somehow make a plot out of it
+```
+
+
 
 **Test 2:** Your plot
 

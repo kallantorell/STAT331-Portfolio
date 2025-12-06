@@ -8,9 +8,11 @@ editor: visual
 execute: 
   eval: false
   echo: false
+  warnings: false
+  error: false
 ---
 
-[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an \_\_.
+[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be a C.
 
 [**Learning Objective Evidence:**]{.underline} In the code chunks below, provide code from Lab or Challenge assignments where you believe you have demonstrated proficiency with the specified learning target. Be sure to specify **where** the code came from (e.g., Lab 4 Question 2).
 
@@ -22,9 +24,10 @@ execute:
 
 ```{r}
 #| label: wd-1-csv-1
-#| label: Lab 4 Problem 0
 
-#| label: load-data
+#| Lab 4 Problem 0
+
+#| load-data
 
 childcare_costs <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-05-09/childcare_costs.csv')
 
@@ -39,7 +42,8 @@ head(childcare_costs)
 
 ```{r}
 #| label: wd-1-csv-2
-#| label: Lab 2 Problem 1
+
+#| Lab 2 Problem 1
 
 surveys <- read_csv("surveys.csv")
 head(surveys)
@@ -51,7 +55,8 @@ glimpse(surveys)
 
 ```{r}
 #| label: wd-1-xlsx
-#| label: Challenge 4: Childcare Prices Problem 0
+
+#| Challenge 4: Childcare Prices Problem 0
 
 my_data <- read_excel("C:/Users/Kallan/Downloads/NDCP2022.xlsx")
 
@@ -66,6 +71,7 @@ head(my_data)
 
 ```{r}
 #| label: wd-2-ex-1
+
 #| Lab 2 Problem 2
 
 ca_childcare <- counties |>
@@ -85,6 +91,7 @@ glimpse(ca_childcare)
 
 ```{r}
 #| label: wd-2-ex-2
+
 #| Lab 2 Problem 2
 
 ca_childcare <- counties |>
@@ -105,6 +112,11 @@ glimpse(ca_childcare)
 ```{r}
 #| label: wd-2-ex-3
 
+#| Lab 8: style plot test 1
+penguin_bill_vars <- penguins |>
+  dplyr::select(contains("bill"))
+
+penguin_bill_vars
 ```
 
 **WD-3: I can filter rows from a dataframe for a *variety* of data types (e.g., numeric, integer, character, factor, date).**
@@ -113,6 +125,7 @@ glimpse(ca_childcare)
 
 ```{r}
 #| label: wd-3-numeric-ex-1
+
 #| lab 4 problem 6
 
 lowest_price_2018 <- ca_childcare |>
@@ -126,7 +139,8 @@ lowest_price_2018 <- ca_childcare |>
 -   Numeric Example 2
 
 ```{r}
-#| label: wd-3-numeric-ex-1
+#| label: wd-3-numeric-ex-2
+
 #| lab 5 problem gym investigation
 
 checkins <- get_fit_now_check_in |>
@@ -144,6 +158,7 @@ gym_checkins <- members |>
 
 ```{r}
 #| label: wd-3-character
+
 #| lab 4 problem 2
 ca_childcare <- counties |>
   filter(state_abbreviation == "CA" | state_name == "California") |>
@@ -160,6 +175,7 @@ ca_childcare <- counties |>
 
 ```{r}
 #| label: wd-3-string
+
 #| lab 4 problem final suspect
 
 suspects <- gym_checkins |>
@@ -177,6 +193,7 @@ final_suspect <- suspects |>
 
 ```{r}
 #| label: wd-3-date
+
 #| Lab 5 - Crime Scene Investigation
 crime_scene_report |>
   mutate(date = ymd(date)) |>
@@ -194,6 +211,7 @@ crime_scene_report |>
 
 ```{r}
 #| label: wd-4-numeric-ex-1
+
 #| Challenge 7 Problem 1
 
 fish <- fish |>
@@ -204,6 +222,7 @@ fish <- fish |>
 
 ```{r}
 #| label: wd-4-numeric-ex-2
+
 #| Lab 4 Problem 3
 
 ca_childcare <- ca_childcare |> 
@@ -214,6 +233,7 @@ ca_childcare <- ca_childcare |>
 
 ```{r}
 #| label: wd-4-factor-ex-1
+
 #| Lab 4 Problem 7
 
 dataplot <- ca_childcare |>
@@ -230,6 +250,7 @@ dataplot <- ca_childcare |>
 
 ```{r}
 #| label: wd-4-factor-ex-2
+
 #| Lab 4 Problem 4
 superior_counties <- c("Butte","Colusa","El Dorado",
                        "Glenn","Lassen","Modoc",
@@ -266,6 +287,7 @@ san_diego_imperial_counties <- c("Imperial","San Diego")
 
 ```{r}
 #| label: wd-4-string
+
 #| Lab 7 Problem 2
 
 dataplot <- dataplot |>
@@ -276,6 +298,7 @@ dataplot <- dataplot |>
 
 ```{r}
 #| label: wd-4-date
+
 #| Lab 5 - Check-in dates
 get_fit_now_check_in |>
   mutate(
@@ -295,6 +318,7 @@ get_fit_now_check_in |>
 
 ```{r}
 #| label: wd-5-left-ex-1
+
 #| lab 4 problem 3
 ca_childcare <- counties |>
   filter(state_abbreviation == "CA") |>
@@ -312,6 +336,7 @@ ca_childcare <- counties |>
 
 ```{r}
 #| label: wd-5-right
+
 #| lab 5 problem gym investigation
 suspects <- person |> 
   select(-name) |>
@@ -330,6 +355,7 @@ final_suspect
 
 ```{r}
 #| label: wd-5-left-right-ex-2
+
 #| lab 5 problem gym investigation
 suspects <- gym_checkins |>
   left_join(person |> select(-name), by = c("person_id" = "id")) |>
@@ -347,6 +373,7 @@ final_suspect
 
 ```{r}
 #| label: wd-5-inner-ex-1
+
 #| lab 4 problem 3
 ca_childcare <- counties |>
   filter(state_abbreviation == "CA") |>
@@ -364,6 +391,7 @@ ca_childcare <- counties |>
 
 ```{r}
 #| label: wd-5-inner-ex-2
+
 #| lab 5 problem gym investigation
 checkins <- get_fit_now_check_in |>
   filter(check_in_date == "20180109") |>
@@ -382,6 +410,7 @@ gym_checkins
 
 ```{r}
 #| label: wd-6-semi
+
 #| Lab 3 question 10
 high_rated_teachers <- clean_teacher_evals |>
   filter(question_no == 901, SET_score_avg >= 4.5) |>
@@ -397,6 +426,7 @@ all_data_for_high_teachers <- clean_teacher_evals |>
 
 ```{r}
 #| label: wd-6-anti
+
 #| Lab 3 question 5
 original_data <- teacher_evals
 
@@ -416,6 +446,7 @@ excluded_data <- original_data |>
 
 ```{r}
 #| label: wd-7-long
+
 #| lab 4 problem 7
 dataplot <- ca_childcare |>
   select(census_region, study_year, mc_infant, mc_toddler, mc_preschool) |>
@@ -433,6 +464,7 @@ dataplot <- ca_childcare |>
 
 ```{r}
 #| label: wd-7-wide
+
 #| Lab 7 Problem 2
 
 fish |>
@@ -469,6 +501,7 @@ The following assignments satisfy the above criteria:
 
 ```{r}
 #| label: r-2-1
+
 #| lab 2 problem 4
 
 ggplot(data = surveys, 
@@ -488,6 +521,7 @@ ggplot(data = surveys,
 
 ```{r}
 #| label: r-2-2
+
 #| lab 4 problem 6
 
 lowest_price_2018 <- ca_childcare |>
@@ -503,6 +537,7 @@ lowest_price_2018 <- ca_childcare |>
 
 ```{r}
 #| label: r-2-3
+
 #| Lab 7 Problem 4
 
 rescale_01 <- function(x, na.rm = TRUE) {
@@ -523,6 +558,7 @@ rescale_01 <- function(x, na.rm = TRUE) {
 
 ```{r}
 #| label: r-3-example
+
 #| Lab 7 Problem 4
 
 rescale_01 <- function(x, na.rm = TRUE) {
@@ -538,6 +574,7 @@ rescale_01 <- function(x, na.rm = TRUE) {
 
 ```{r}
 #| label: r-3-function-stops
+
 #| Lab 8 Problem 1
 
 rescale_column <- function(df, cols) {
@@ -556,6 +593,7 @@ rescale_column <- function(df, cols) {
 
 ```{r}
 #| label: dvs-1-num
+
 #| Lab 2 problem 4
 
 ggplot(data = surveys, 
@@ -575,6 +613,7 @@ ggplot(data = surveys,
 
 ```{r}
 #| label: dvs-2-num-cat
+
 #| lab 2 problem 10
 
 ggplot(data = surveys, aes(x = species, y = weight)) +
@@ -593,6 +632,7 @@ ggplot(data = surveys, aes(x = species, y = weight)) +
 
 ```{r}
 #| label: dvs-2-cat
+
 #| lab 4 problem 7
 
 dataplot <- ca_childcare |>
@@ -623,6 +663,7 @@ ggplot(dataplot, aes(study_year, price, color = census_region)) +
 
 ```{r}
 #| label: dvs-2-date
+
 #| lab 4 problem 8
 
 ggplot(ca_childcare, aes(x = mhi_2018, y = mc_infant)) +
@@ -643,6 +684,7 @@ ggplot(ca_childcare, aes(x = mhi_2018, y = mc_infant)) +
 
 ```{r}
 #| label: dvs-2-ex-1
+
 #| Lab 8: plot-function chunk
 
 boxplot_plot <- function(df, x, y, fill_var, title = NULL) {
@@ -669,6 +711,7 @@ boxplot_plot <- function(df, x, y, fill_var, title = NULL) {
 
 ```{r}
 #| label: dvs-2-ex-2
+
 #| lab 4 problem 7
 
 dataplot <- ca_childcare |>
@@ -699,6 +742,7 @@ ggplot(dataplot, aes(study_year, price, color = census_region)) +
 
 ```{r}
 #| label: dvs-2-ex-3
+
 #| lab 2 problem 4
 
 ggplot(data = surveys, 
@@ -718,6 +762,7 @@ ggplot(data = surveys,
 
 ```{r}
 #| label: dvs-2-ex-4
+
 #| lab 2 problem 16
 
 ggplot(data = surveys, aes(x = weight, y = species)) +
@@ -735,6 +780,7 @@ ggplot(data = surveys, aes(x = weight, y = species)) +
 
 ```{r}
 #| label: dvs-2-ex-5
+
 #| style-plot-test-2 Revised
 penguins_releveled <- penguins |>
   dplyr::mutate(sex = forcats::fct_relevel(sex, "female", "male"))
@@ -755,6 +801,7 @@ boxplot_plot(penguins_releveled, species, body_mass_g, fill_var = sex,
 
 ```{r}
 #| label: dvs-3-1-ex-1
+
 #| lab 2 problem 3
 
 ggplot(data = surveys,
@@ -767,6 +814,7 @@ ggplot(data = surveys,
 
 ```{r}
 #| label: dvs-3-1-ex-2
+
 #| lab 2 problem 10
 
 ggplot(data = surveys, aes(x = species, y = weight)) +
@@ -785,6 +833,7 @@ ggplot(data = surveys, aes(x = species, y = weight)) +
 
 ```{r}
 #| label: dvs-3-2
+
 #| Lab 8: style-plot-test-1
 library(RColorBrewer)
 
@@ -811,6 +860,7 @@ ggplot(penguin_counts, aes(x = species, y = n, fill = sex)) +
 
 ```{r}
 #| label: dvs-3-3
+
 #| lab 4 problem 7
 ggplot(dataplot, aes(study_year, price, color = census_region)) +
   geom_point(alpha = 0.7) +
@@ -830,6 +880,7 @@ ggplot(dataplot, aes(study_year, price, color = census_region)) +
 
 ```{r}
 #| label: dvs-4-summarize
+
 #| lab 4 problem 6
 
 lowest_price_2018 <- ca_childcare |>
@@ -844,6 +895,7 @@ lowest_price_2018 <- ca_childcare |>
 
 ```{r}
 #| label: dvs-4-across
+
 #| Lab 7 Problem 1
 
 fish |>
@@ -862,6 +914,7 @@ fish |>
 
 ```{r}
 #| label: dvs-5-1
+
 #| Lab 3 Problem 10
 
 clean_teacher_evals |>
@@ -879,6 +932,7 @@ clean_teacher_evals |>
 
 ```{r}
 #| label: dvs-5-2
+
 #| Lab 4 Problem 5
 
 ca_childcare |>
@@ -896,6 +950,7 @@ ca_childcare |>
 
 ```{r}
 #| label: dvs-6-ex-1
+
 #| Lab 7: pivot-summary-table
 
 fish |>
@@ -931,6 +986,7 @@ fish |>
 
 ```{r}
 #| label: dvs-6-ex-3
+
 #| Lab 4 Problem 5
 
 median_income_by_region <- ca_childcare |>
@@ -956,6 +1012,7 @@ median_income_by_region <- ca_childcare |>
 
 ```{r}
 #| label: dvs-7-ex-2
+
 #| Lab 4 Problem 5
 
 ca_childcare |>
@@ -974,6 +1031,7 @@ ca_childcare |>
 
 ```{r}
 #| label: pe-1-one-call
+
 #| Lab 8 Problem 1
 
 rescale_column(penguins, 
@@ -985,6 +1043,14 @@ rescale_column(penguins,
 ```{r}
 #| label: pe-1-across
 
+#| Lab 8 Problem 1
+
+rescale_column <- function(df, cols) {
+  df |>
+    dplyr::mutate(
+      dplyr::across({{ cols }}, rescale_01)
+    )
+}
 ```
 
 -   using functions from the `map()` family
@@ -992,6 +1058,18 @@ rescale_column(penguins,
 ```{r}
 #| label: pe-1-map-1
 
+#| rescale-column-test 
+
+numeric_penguin_vars <- penguins |>
+  dplyr::select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g)
+
+penguin_means <- numeric_penguin_vars |>
+  purrr::map_dbl(~ mean(.x, na.rm = TRUE))
+
+penguin_means
+
+#revision: extended thinking on rescaling a column 
+#https://purrr.tidyverse.org/reference/map.html
 ```
 
 **PE-2: I can write functions to reduce repetition in my code.**
@@ -1000,6 +1078,7 @@ rescale_column(penguins,
 
 ```{r}
 #| label: pe-2-1
+
 #| Challenge 7 Problem 2
 
 flag_outside_na <- function(x, min_val, max_val) {
@@ -1013,6 +1092,7 @@ flag_outside_na <- function(x, min_val, max_val) {
 
 ```{r}
 #| label: pe-2-2
+
 #| Lab 8 Problem 2
 
 pivot_table <- function(df, row_var, col_var) {
@@ -1031,6 +1111,7 @@ pivot_table <- function(df, row_var, col_var) {
 
 ```{r}
 #| label: pe-2-3
+
 #| Lab 8 Problem 1
 
 rescale_column <- function(df, cols) {
@@ -1048,6 +1129,25 @@ rescale_column <- function(df, cols) {
 ```{r}
 #| label: pe-3-across
 
+#| Lab 7: find-missing-values
+
+fish |>
+  summarize(
+    across(
+      .cols  = everything(),
+      .fns   = ~ sum(is.na(.)),
+      .names = "missing_{col}"
+    )
+  ) |>
+  pivot_longer(
+    cols      = everything(),
+    names_to  = "variable",
+    values_to = "n_missing"
+  ) |>
+  mutate(
+    variable = str_remove(variable, "^missing_")
+  ) |>
+  filter(n_missing > 0)
 ```
 
 -   using a `map()` function with **one** input (e.g., `map()`, `map_chr()`, `map_dbl()`, etc.)
@@ -1070,6 +1170,7 @@ rescale_column <- function(df, cols) {
 
 ```{r}
 #| label: pe-4-1
+
 #| Lab 4 Problem 5
 
 ca_childcare |>
@@ -1082,6 +1183,7 @@ ca_childcare |>
 
 ```{r}
 #| label: pe-4-2
+
 #| Lab 4 Problem 7
 
 ca_childcare |>
@@ -1092,7 +1194,7 @@ ca_childcare |>
   geom_point()
 ```
 
-## Data Simulation & Statisical Models
+## Data Simulation & Statistical Models
 
 **DSSM-1: I can simulate data from a *variety* of probability models.**
 
@@ -1116,7 +1218,8 @@ ca_childcare |>
 
 ```{r}
 #| label: dsm-2-1
-#| Lab 1
+
+#| Lab 1: statistical analysis 
 
 t.test(len ~ supp, data = ToothGrowth,
        var.equal = FALSE, 
@@ -1127,6 +1230,7 @@ t.test(len ~ supp, data = ToothGrowth,
 
 ```{r}
 #| label: dsm-2-2
+
 #| Lab 2 Problem 17
 
 species_mod <- aov(weight ~ species, data = surveys)
@@ -1137,6 +1241,7 @@ summary(species_mod)
 
 ```{r}
 #| label: dsm-2-3
+
 #| Lab 4 Problem 9
 
 reg_mod1 <- lm(mc_infant ~ mhi_2018, data = ca_childcare)
@@ -1157,7 +1262,7 @@ In the second half of the quarter, using the instructors notes and my own resear
 
 <!-- How did you extended your thinking throughout the course? How did you extend your thinking on the code examples you have provided in your portfolio? -->
 
-At the start of this course, I approached all problems the same way I would a python data analytics problem. I realized quickly that I cannot approach R and Python in the same way, and needed to learn how to approach problems in R studio in a different way, which will help me expand this course. Many of the problems in the portfolio so far I have approached as python problems, and to diversify my thinking more, i need to learn to approach R separately.
+After the midterm portfolio meeting I realized when it came to growing as a data analyst, I was behind a majority of the class. This lit a fire under me and made me start to think about "what am I not considering" or "what context am I not grasping" with the assignments we had the rest of the quarter, as well as past assignments. I started to think about the next step or what other questions could be asked following a coding problem in labs, or think about what exactly is the context and usage of inputs in the code I am submitting. Challenge 7 displayed this well as I incorporated multiple input checks into my code and really dove into creating functions in R. I also went back and looked at previous assignments and thought about previous code chunks, such as the teacher evals in Lab 3. I thought about further questions that could be asked about teacher ratings, like how many teachers received at least 1 highly rated course. I also thought about the data cleaning in that lab, where after cleaning we could view which data was excluded and why we would exclude it.
 
 ## Peer Support & Collaboration
 
@@ -1165,4 +1270,6 @@ At the start of this course, I approached all problems the same way I would a py
 
 <!-- Include a description of how you grew as a collaborator through the weekly pair programming activities.   -->
 
-As a peer collaborator, I struggled in the first few PA's because I did not allow my collaborators to think through problems themselves. I often jumped in too fast to help or filled in code segments for them without discussing it. However, after a few weeks, I felt much more at ease trusting my collaborating partners, and was able to sit back and let them think when they were the coder, which I believe helped them to allow me to think through things myself and grow as a coder as well.
+As a peer collaborator, I struggled in the first couple PA's because I did not allow my collaborators to think through problems themselves. I often jumped in too fast to help or filled in code segments for them without discussing it. However, after a few weeks, I felt much more at ease trusting my collaborating partners, and was able to sit back and let them think when they were the coder, which I believe helped them to allow me to think through things myself and grow as a coder as well.
+
+After the last few weeks as a collaborator, I believe I have grown a lot with understanding the paired programming activities. It was not only a learning experience it was for my partner, but just as much for me as a group member and in a way just a test of patience. Maybe I did have an answer or coding solution that was better than theirs but it would not be fair to jump in and take away their learning opportunity. In the same sense, maybe they had a solution that was better than mine, but allowed me to learn from my mistakes and grow as a data analyst and R coder. My groups began to consistently finish labs in time, and the experience became a lot more positive and friendly when my partner or partners coexisted better as a group and learned together.

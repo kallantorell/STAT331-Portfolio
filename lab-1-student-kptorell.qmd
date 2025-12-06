@@ -5,8 +5,11 @@ format: html
 editor: source
 embed-resources: true
 execute: 
+  code-tools: true
+  eval: true
   echo: true
-  error: true
+  error: false
+  warning: false
 ---
 
 # Exploring Quarto Documents
