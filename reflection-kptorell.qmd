@@ -1,15 +1,15 @@
 ---
 title: "STAT 331 Final Portfolio"
 author: "Kallan Torell"
-format: html 
+format: html
 embed-resources: true
 layout: margin-left
-editor: visual
-execute: 
+execute:
   eval: false
-  echo: false
-  warnings: false
-  error: false
+  echo: true
+  warning: false
+  message: false
+editor: visual
 ---
 
 [**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be a C.
